@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <style type="text/css">
+        .abs-center {
+            position: absolute;
+            left: 50%;
+            -webkit-transform: translateX(-50%);
+        }
+        .problem {
+            text-align: right;
+            font-size: 40px;
+            font-family: Menlo, Monaco, Consolas, monospace;
+        }
+        .op {
+            position: absolute;
+            left: -50px;
+        }
+        .green {
+            color: green;
+        }
+        .operator {
+            top: 30px;
+            font-size: 30px;
+        }
+        .operator a {
+            text-decoration: none;
+            color: #EEE;
+            background: #AAA;
+            padding: 0 15px 3px;
+        }
+        .operator a:hover {
+            background: #666;
+        }
+        .operator a.active {
+            color: #222;
+            border: 1px solid #444;
+            background: white;
+        }
+        .level-time {
+            top: 80px;
+            display: flex;
+            flex-flow: row;
+        }
+        .level-time > div {
+            text-align: center;
+            padding: 15px;
+        }
+        .go {
+            top: 180px;
+        }
+        .go a {
+            padding: 0 18px 8px;
+            font-size: 30px;
+            font-family: "Ubuntu Sans", Calibri, Helvetica, Arial, sans-serif;
+            text-decoration: none;
+            color: black;
+            background: #EEE;
+            border: 1px solid #EEE;
+        }
+        .go a:hover {
+            background: white;
+        }
+        .login-register {
+            display: flex;
+            flex-flow: row;
+        }
+        .login-register > div {
+            padding: 15px;
+        }
+        .stats {
+            padding: 50px;
+            font-size: 20px;
+            font-weight: 100;
+        }
+        </style>
+        <script src="angular.min.js"></script>
+        <script src="math.js"></script>
+        <script src="backend-ls.js"></script>
+    </head>
+    <body ng-app="math" ng-controller="AppCtrl">
+        <div class="username" ng-show="username">{{username}} - <a href="" ng-click="logout()">log out</a></div>
+        <div class="menu" ng-show="username && !playing">
+            <div class="operator abs-center">
+                <a href="" ng-click="op = '+'" active="op == '+'">+</a>
+                <a href="" ng-click="op = '-'" active="op == '-'">−</a>
+                <a href="" ng-click="op = '×'" active="op == '×'">×</a>
+                <a href="" ng-click="op = '÷'" active="op == '÷'">÷</a>
+            </div>
+            <div class="level-time abs-center">
+                <div>
+                    Level
+                    <hr />
+                    <select ng-model="level" ng-options="lev for lev in [2,3,4,5,6,7,8,9,10,11,12,13,14,15]"></select>
+                </div>
+                <div>
+                    Minutes
+                    <hr />
+                    <select ng-model="time" ng-options="mins for mins in [1,2,3,4,5]"></select>
+                </div>
+            </div>
+            <div class="abs-center go">
+                <a href="" ng-click="go()">go</a>
+            </div>
+        </div>
+        <div class="login-register abs-center" ng-show="!username">
+            <div class="login">
+                <center><h4>log in</h4></center>
+                <form ng-submit="login()">
+                    <input type="text" placeholder="username" ng-model="loginUsername"><br />
+                    <input type="password" placeholder="password" ng-model="loginPassword"><br />
+                    <input type="submit" value="go" ng-disabled="!loginUsername || !loginPassword">
+                </form>
+                <div class="error" ng-show="loginError">{{loginError}}</div>
+            </div>
+            <div class="signup">
+                <center><h4>sign up</h4></center>
+                <form ng-submit="signup()">
+                    <input type="text" placeholder="username" ng-model="signupUsername"><br />
+                    <input type="password" placeholder="password" ng-model="signupPassword"><br />
+                    <input type="password" placeholder="confirm password" ng-model="signupPassword2"><br />
+                    <input type="submit" value="go" ng-disabled="!signupUsername || !signupPassword || (signupPassword != signupPassword2)">
+                </form>
+                <div class="error" ng-show="signupError">{{signupError}}</div>
+            </div>
+        </div>
+        <div ng-show="playing && !stats">
+            
+            <div class="problem abs-center">
+                <span class="left">{{left}}</span><br />
+                <span class="op">{{op}}</span>
+                <span class="right">{{right}}</span><br />
+                <span class="op" ng-class="{green: success()}">=</span>
+                <span ng-class="{green: success()}">{{solution}}</span>
+            </div>
+            <div class="score">{{score}}</div>
+        </div>
+
+        <div ng-show="stats" class="stats abs-center">
+            You scored: <strong>{{score}}</strong>
+        </div>
+
+    </body>
+</html>

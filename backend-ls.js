@@ -96,7 +96,7 @@ math.factory('Backend', function ($q) {
   };
 
   var log = function (mode, level, time, score) {
-    if (user = null) {
+    if (user == null) {
       throw new Error("what you is doing?");
     } else {
       user.history.push({mode: mode, level: level, time: time, score: score, timestamp: +new Date()});
